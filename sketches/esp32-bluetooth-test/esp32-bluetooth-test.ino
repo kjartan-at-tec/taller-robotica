@@ -7,10 +7,14 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+#define LED 2
+
 BluetoothSerial SerialBT;
+String DATA;
 
 void setup() {
   // put your setup code here, to run once:
+  pinMode(LED,OUTPUT);
   Serial.begin(115200);
   delay(3000);
   SerialBT.begin("ESP32test");
@@ -19,11 +23,26 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+ 
+  if (SerialBT.available()) {
+    DATA = SerialBT.readString();
+    DATA.trim();
+    Serial.println("New DATA: ");
+    Serial.println(DATA);
+ 
+    if (DATA == "ON") {
+      Serial.println("Turning LED on");
+      digitalWrite(LED, HIGH);
+      }
+    if (DATA == "OFF") {
+      Serial.println("Turning LED off");
+      digitalWrite(LED, LOW);
+    }
+  }
+
   if (Serial.available()) {
     SerialBT.write(Serial.read());
   }
-  if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
-  }
-  delay(20);  
+  delay(20);
+    
 }
