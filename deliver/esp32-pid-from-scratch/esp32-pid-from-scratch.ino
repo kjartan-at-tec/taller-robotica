@@ -1,3 +1,4 @@
+/// --------------------------------------------------------------------
 // Controlling the motor position using a discrete-time PID controller.
 // The parameters are for a continuous-time PID controller, and the 
 // discretization is by Tustin's method.
@@ -5,16 +6,33 @@
 // compensation.
 // The code is copied from Åström and Wittenmark Computer-controlled systems,
 // Listing 8.1
+// 
+// @author Kjartan Halvorsen, kjartan@tec.mx
+/// --------------------------------------------------------------------
+
 
 #include <Arduino.h>
 #include <ESP32Encoder.h>
 
+/// --------------------------------------------------------------------
+// Setpoints, in #revolutions 
+/// --------------------------------------------------------------------
+double setpoints[] = {0.5, 1, 0.5, 0, -0.5,-2,-1, 0};
+/// --------------------------------------------------------------------
+ 
+
+/// --------------------------------------------------------------------
 // Definitions and global variables for encoder
+/// --------------------------------------------------------------------
 #define ROTARY_PIN_A 34
 #define ROTARY_PIN_B 35
 ESP32Encoder encoder;
+double PPR = 374*4; // Times 4 for full quadrature
+/// --------------------------------------------------------------------
 
+/// --------------------------------------------------------------------
 // Definitions and global variables for H-bridge controller
+/// --------------------------------------------------------------------
 #define ENA 13
 #define IN_1 12
 #define IN_2 14
@@ -24,13 +42,16 @@ const int CCW = 2;
 const int CW = 1;
 const int pwmChannel = 0;
 const int freq = 10000;
+/// --------------------------------------------------------------------
 
+/// --------------------------------------------------------------------
 // Sampling period in ms
 const long  DT = 30;
+/// --------------------------------------------------------------------
 
-// ---------------------------------------------------------
+/// ---------------------------------------------------------
 // PID controller implementation
-// ---------------------------------------------------------
+/// ---------------------------------------------------------
 struct PID_Data {
   struct {
     double uc;  // Setpoint
@@ -119,19 +140,14 @@ void PID_UpdateStates(struct PID_Data *pd){
   pd->States.yold = pd->Signals.y;
 }
 
-// ---------------------------------------------------------
+/// ---------------------------------------------------------
 // End PID controller implementation
-// ---------------------------------------------------------
+/// ---------------------------------------------------------
 
 
 void writeU(double *u); // Handles the motor
 void spinMotor(int dir, int dutyC);
 
-// Setpoints for testing
-double PPR = 374*4; // Times 4 for full quadrature
-//double setpoints[] = {0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0., -0.25, -0.5, -1, -0.5, -0.25,0};
-double setpoints[] = {0.5, 1, 0.5, 0, -0.5,-2,-1, 0};
- 
 
 void setup() {
   // put your setup code here, to run once:

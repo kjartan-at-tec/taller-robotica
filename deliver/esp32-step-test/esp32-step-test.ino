@@ -1,31 +1,45 @@
-// Step test to determine relationship between input voltage and output speed
+// Step test to determine relationship between 
+// input voltage and output speed
+// Output is to Serial monitor (or plotter)
+
+// @author Kjartan Halvorsen, kjartan@tec.mx
+
 #include <Arduino.h>
 #include <ESP32Encoder.h>
 
+// --------------------------------------------------
+// Global variables for step-response test
+// --------------------------------------------------
+const int stepDutycycle = 1000; //
+const int dt = 2;                  // Sampling period ms
+const int experimentLength = 400;  // Number of samples 
+long int counts[experimentLength]; // Experiment results
+bool done = false;                 // Run only once
+// --------------------------------------------------
+
+// --------------------------------------------------
 // Definitions for encoder
+// --------------------------------------------------
 #define ROTARY_PIN_A 34
 #define ROTARY_PIN_B 35
+ESP32Encoder encoder;
+
+// --------------------------------------------------
+
+// --------------------------------------------------
 // Definitions for H-bridge controller
+// --------------------------------------------------
 #define ENA 13
 #define IN_1 12
 #define IN_2 14
-
-// Global variables for step-response test
-const int stepDutycycle = 200;
-const int experimentLength = 400;
-const int dt = 2;
-long int counts[experimentLength];
-bool done = false;
-
-
 // Global variables for motor controller
 const int CCW = 2;
 const int CW = 1;
 const int pwmChannel = 0;
-const int freq = 5000;
-const int resolution = 8;
+const int freq = 10000;
+const int resolution = 10;
+// --------------------------------------------------
 
-ESP32Encoder encoder;
 
 void rotateMotor(int dir, long int *counts, int ncounts, long int dt, ESP32Encoder enc, int dutyC);
 
