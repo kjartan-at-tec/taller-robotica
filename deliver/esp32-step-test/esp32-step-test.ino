@@ -1,8 +1,11 @@
-// Step test to determine relationship between 
-// input voltage and output speed
-// Output is to Serial monitor (or plotter)
+/*
+ * Step test to determine relationship between 
+ * input voltage and output speed
+ * Output is to Serial monitor (or plotter)
 
-// @author Kjartan Halvorsen, kjartan@tec.mx
+ *@author Kjartan Halvorsen, kjartan@tec.mx
+ * 
+ */
 
 #include <Arduino.h>
 #include <ESP32Encoder.h>
@@ -10,9 +13,9 @@
 // --------------------------------------------------
 // Global variables for step-response test
 // --------------------------------------------------
-const int stepDutycycle = 1000; //
+const int stepDutycycle = 1000;    // max 1024 since 10 bit resolution
 const int dt = 2;                  // Sampling period ms
-const int experimentLength = 400;  // Number of samples 
+const int experimentLength = 600;  // Number of samples 
 long int counts[experimentLength]; // Experiment results
 bool done = false;                 // Run only once
 // --------------------------------------------------
